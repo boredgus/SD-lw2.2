@@ -34,34 +34,34 @@ public class Menu {
                     message = "Неправильное значение! Попробуйте ещё раз!\n";
             }
         }
+        bundle = ResourceBundle.getBundle("resources.MyMessages " + Locale.getDefault());
     }
 
     public void start(){
-        Scanner in = new Scanner((System.in));
+        Scanner in = new Scanner(System.in);
         boolean check = true;
         String message = "";
         while(check){
             System.out.print(message + bundle.getString("Menu1KEY"));
             message = "";
-            String option = in.nextLine();
+            int option = in.nextInt();
             switch(option){
-                case "1":
+                case 1:
                     addRow();
                     break;
-                case "2":
+                case 2:
                     updateRow();
                     break;
-                case "3":
+                case 3:
                     deleteRow();
                     break;
-                case "4":
+                case 4:
                     check = false;
                     break;
                 default:
                     message = bundle.getString("WrongOptionKEY");
             }
         }
-        in.close();
     }
 
     public void addRow(){
@@ -79,25 +79,65 @@ public class Menu {
         busList.add(new Bus(driverName, num, route, mileage));
         dto.setAll(busController.getWholeBus(busList.size() - 1));
         dao.addRow(dto);
-        in.close();
     }
 
     public void updateRow(){
         Scanner in = new Scanner(System.in);
         System.out.print(bundle.getString("UpdatingMessageKEY"));
+        System.out.print(bundle.getString("EnterIdKEY"));
+        int id = in.nextInt();
 
-        in.close();
+        boolean check = true;
+        while(check) {
+            System.out.print(bundle.getString("Menu2KEY"));
+            String option = in.nextLine();
+            switch (option) {
+                case "1":
+                    System.out.print(bundle.getString("EnterDriverNameKEY"));
+                    String driverName = in.nextLine();
+                    busController.getWholeBus(id - 1).setDriverName(driverName);
+                    dto.setAll(busController.getWholeBus(id - 1));
+                    dao.updateRow(dto, id);
+                    check = false;
+                    break;
+                case "2":
+                    System.out.print(bundle.getString("EnterNumKEY"));
+                    int num = in.nextInt();
+                    busController.getWholeBus(id - 1).setNum(num);
+                    dto.setAll(busController.getWholeBus(id - 1));
+                    dao.updateRow(dto, id);
+                    check = false;
+                    break;
+                case "3":
+                    System.out.print(bundle.getString("EnterRouteKEY"));
+                    String route = in.nextLine();
+                    busController.getWholeBus(id - 1).setRoute(route);
+                    dto.setAll(busController.getWholeBus(id - 1));
+                    dao.updateRow(dto, id);
+                    check = false;
+                    break;
+                case "4":
+                    System.out.print(bundle.getString("EnterMileageKEY"));
+                    long mileage = in.nextLong();
+                    busController.getWholeBus(id - 1).setMileage(mileage);
+                    dto.setAll(busController.getWholeBus(id - 1));
+                    dao.updateRow(dto, id);
+                    check = false;
+                    break;
+                case "5":
+                    check = false;
+                    break;
+                default:
+                    System.out.print(bundle.getString("WrongOptionKEY"));
+            }
+        }
     }
 
     public void deleteRow(){
         Scanner in = new Scanner(System.in);
         System.out.print(bundle.getString("DeletingMessageKEY"));
-        boolean check = true;
-        while(check){
-            System.out.print(bundle.getString("EnterIdKEY"));
-            int id = in.nextInt();
-            dao.deleteRow(id);
-        }
-        in.close();
+        System.out.print(bundle.getString("EnterIdKEY"));
+        int id = in.nextInt();
+        dao.deleteRow(id);
     }
 }
